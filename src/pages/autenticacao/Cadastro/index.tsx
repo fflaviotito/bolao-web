@@ -1,25 +1,17 @@
-import { useEffect, useState, type FormEvent } from 'react';
-import Botao from '../../../components/Botao';
-import InputTexto from '../../../components/InputTexto';
-import {
-    CabecalhoCartao,
-    CartaoCadastro,
-    FormularioCadastro,
-    LadoMarca,
-    CadastroContainer,
-    RodapeCartao
-} from './style';
 import z from 'zod';
-import { emailRegra, nomeUsuarioRegra, senhaForteRegra } from '../../../validators';
-import { toast } from 'react-toastify';
-import { useCarregando } from '../../../contexts/CarregandoContext';
-import type { AxiosError } from 'axios';
-import type { RespostaErro } from '../../../types/api';
-import api from '../../../services/api';
+import { emailRegra, nomeUsuarioRegra, senhaForteRegra } from '@/validators';
 import { Link, useNavigate } from 'react-router-dom';
-import { formatarErrosZod } from '../../../utils/formatarErrosZod';
+import { useCarregando } from '@/contexts/CarregandoContext';
+import { useEffect, useState, type FormEvent } from 'react';
+import api from '@/services/api';
+import { toast } from 'react-toastify';
+import { tratarErro, validarFormulario } from '@/utils';
+import PaginaAutenticacao from '@/layouts/PaginaAutenticacao';
+import * as S from './style';
+import { Formulario } from '@/layouts/PaginaAutenticacao/style';
+import { Botao, InputTexto } from '@/components';
 
-const cadastroSchema = z
+const schema = z
     .object({
         nome: nomeUsuarioRegra,
         email: emailRegra,
@@ -47,115 +39,88 @@ const Cadastro = () => {
 
     const aoEnviar = async (evento: FormEvent) => {
         evento.preventDefault();
-        setErros({});
 
-        const dadosValidos = cadastroSchema.safeParse({ nome, email, senha, senhaConfirmacao });
-        if (!dadosValidos.success) {
-            const errosFormatados = formatarErrosZod(dadosValidos.error);
-            setErros(errosFormatados);
-            return toast.warning('Verifique os campos destacados!');
-        }
+        const dadosValidos = validarFormulario({
+            schema,
+            dados: { nome, email, senha, senhaConfirmacao },
+            setErros
+        });
+        if (!dadosValidos) return;
 
         try {
             mostrarCarregando();
             await api.post('/registrar', dadosValidos.data);
             toast.success('Cadastro realizado com sucesso!');
             navegar('/entrar');
-        } catch (error) {
-            const erroAxios = error as AxiosError<RespostaErro>;
-
-            if (!erroAxios.response) {
-                return toast.error('Erro de conexão com o servidor. Tente mais tarde!');
-            }
-
-            const { codigo } = erroAxios.response.data;
-
-            if (codigo === 400) return toast.warning('Campos inválidos!');
-
-            if (codigo === 409) {
-                setErros({ email: ['E-mail já está em uso'] });
-                return toast.warning('E-mail já cadastrado!');
-            }
-
-            if (codigo === 500) return toast.error('Erro no servidor, contate o suporte!');
+        } catch (erro) {
+            tratarErro(erro, setErros, {
+                409: 'E-mail já cadastrado!'
+            });
         } finally {
             esconderCarregando();
         }
     };
 
     return (
-        <CadastroContainer>
-            <LadoMarca>
-                <img src="/images/logo.png" alt="Logo do Bolão" />
+        <PaginaAutenticacao
+            titulo="Junte-se à torcida!"
+            descricao="Crie sua conta em segundos."
+            descricao2="Começe a palpitar nos melhores jogos."
+            tituloCartao="Crie sua conta"
+            subtituloCartao="Insira suas informações e faça seu registro"
+            ladoCartao="esquerdo"
+        >
+            <Formulario onSubmit={aoEnviar}>
                 <div>
-                    <h1>Junte-se à torcida!</h1>
-                    <p>
-                        Crie sua conta em segundos.
-                        <br />
-                        Começe a palpitar nos melhores jogos.
-                    </p>
+                    <InputTexto
+                        label="Nome"
+                        placeholder="Digite seu nome..."
+                        required={false}
+                        name="nome"
+                        value={nome}
+                        onChange={(evento) => setNome(evento.target.value)}
+                        erros={erros}
+                    />
+                    <InputTexto
+                        label="E-mail"
+                        type="text"
+                        placeholder="Digite seu email..."
+                        required={false}
+                        name="email"
+                        value={email}
+                        onChange={(evento) => setEmail(evento.target.value)}
+                        erros={erros}
+                    />
+                    <InputTexto
+                        label="Senha"
+                        type="password"
+                        placeholder="Digite sua senha..."
+                        required={false}
+                        name="senha"
+                        value={senha}
+                        onChange={(evento) => setSenha(evento.target.value)}
+                        erros={erros}
+                    />
+                    <InputTexto
+                        label="Confirme sua senha"
+                        type="password"
+                        placeholder="Digite novamente sua senha..."
+                        required={false}
+                        name="senhaConfirmacao"
+                        value={senhaConfirmacao}
+                        onChange={(evento) => setSenhaConfirmacao(evento.target.value)}
+                        erros={erros}
+                    />
                 </div>
-            </LadoMarca>
+                <Botao tipo="submit" texto="Cadastre-se" variante="principal" larguraTotal />
+            </Formulario>
 
-            <CartaoCadastro>
-                <CabecalhoCartao>
-                    <img src="/images/logo.png" alt="Logo do Bolão" />
-                    <h2>Crie sua conta</h2>
-                    <p>Insira suas informações e faça seu registro</p>
-                </CabecalhoCartao>
-
-                <FormularioCadastro onSubmit={aoEnviar}>
-                    <div>
-                        <InputTexto
-                            label="Nome"
-                            placeholder="Digite seu nome..."
-                            required={false}
-                            name="nome"
-                            value={nome}
-                            onChange={(evento) => setNome(evento.target.value)}
-                            erros={erros}
-                        />
-                        <InputTexto
-                            label="E-mail"
-                            type="text"
-                            placeholder="Digite seu email..."
-                            required={false}
-                            name="email"
-                            value={email}
-                            onChange={(evento) => setEmail(evento.target.value)}
-                            erros={erros}
-                        />
-                        <InputTexto
-                            label="Senha"
-                            type="password"
-                            placeholder="Digite sua senha..."
-                            required={false}
-                            name="senha"
-                            value={senha}
-                            onChange={(evento) => setSenha(evento.target.value)}
-                            erros={erros}
-                        />
-                        <InputTexto
-                            label="Confirme sua senha"
-                            type="password"
-                            placeholder="Digite novamente sua senha..."
-                            required={false}
-                            name="senhaConfirmacao"
-                            value={senhaConfirmacao}
-                            onChange={(evento) => setSenhaConfirmacao(evento.target.value)}
-                            erros={erros}
-                        />
-                    </div>
-                    <Botao tipo="submit" texto="Cadastre-se" variante="principal" larguraTotal />
-                </FormularioCadastro>
-
-                <RodapeCartao>
-                    <Link to="/entrar">
-                        Já tem uma conta? <span>Entrar</span>
-                    </Link>
-                </RodapeCartao>
-            </CartaoCadastro>
-        </CadastroContainer>
+            <S.RodapeCartao>
+                <Link to="/entrar">
+                    Já tem uma conta? <span>Entrar</span>
+                </Link>
+            </S.RodapeCartao>
+        </PaginaAutenticacao>
     );
 };
 

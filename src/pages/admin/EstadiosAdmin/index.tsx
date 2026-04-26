@@ -1,14 +1,9 @@
 import { useState } from 'react';
 import { useBuscaPaginada } from '@/hooks/useBuscaPaginada';
+import type { Estadio } from '@/types';
 import * as S from '@/styles/TabelasAdmin';
 import PaginasAdmin from '@/layouts/PaginasAdmin';
 import FormNovoEstadio from './FormNovoEstadio';
-
-interface Estadios {
-    id: string;
-    nomeOficial: string;
-    nomePopular: string;
-}
 
 const EstadiosAdmin = () => {
     const [modalAberto, setModalAberto] = useState(false);
@@ -17,7 +12,7 @@ const EstadiosAdmin = () => {
         dados: estadios,
         paginacao,
         recarregar
-    } = useBuscaPaginada<Estadios>('/estadios');
+    } = useBuscaPaginada<Estadio>('/estadios');
 
     return (
         <S.Container>
@@ -31,7 +26,7 @@ const EstadiosAdmin = () => {
                     <S.Tabela>
                         <thead>
                             <tr>
-                                <th style={{ width: '50px' }}>Nº</th>
+                                <S.ColunaNumero>Nº</S.ColunaNumero>
                                 <th>Nome Popular</th>
                                 <th>Nome Oficial</th>
                             </tr>
@@ -40,9 +35,7 @@ const EstadiosAdmin = () => {
                             {estadios.map((estadio, index) => (
                                 <tr key={estadio.id}>
                                     <td>{(paginacao.pagina - 1) * 10 + index + 1}</td>
-                                    <td style={{ fontWeight: 'bold', color: '#0f172a' }}>
-                                        {estadio.nomePopular}
-                                    </td>
+                                    <S.ColunaForte>{estadio.nomePopular}</S.ColunaForte>
                                     <td>{estadio.nomeOficial}</td>
                                 </tr>
                             ))}

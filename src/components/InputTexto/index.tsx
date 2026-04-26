@@ -1,6 +1,7 @@
 import type { ChangeEvent, InputHTMLAttributes } from 'react';
-import { Container, ListaErros } from './style';
 import type { ErrosPorCampo } from '../../utils/formatarErrosZod';
+import { Container } from './style';
+import { ListaErro } from '@/components';
 
 interface InputTextoProps extends InputHTMLAttributes<HTMLInputElement> {
     label: string;
@@ -40,13 +41,7 @@ const InputTexto = ({
                 onChange={onChange}
                 {...rest}
             />
-            {errosDesteCampo && (
-                <ListaErros>
-                    {errosDesteCampo.map((msg, index) => (
-                        <li key={index}>{msg}</li>
-                    ))}
-                </ListaErros>
-            )}
+            {errosDesteCampo && <ListaErro erros={errosDesteCampo} />}
         </Container>
     );
 };

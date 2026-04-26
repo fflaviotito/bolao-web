@@ -7,12 +7,7 @@ export interface PaginacaoProps {
     totalRegistros: number;
 }
 
-const Paginacao = ({
-    setPagina,
-    itensPorPagina = 25,
-    pagina,
-    totalRegistros
-}: PaginacaoProps) => {
+const Paginacao = ({ setPagina, itensPorPagina = 25, pagina, totalRegistros }: PaginacaoProps) => {
     const totalPaginas = Math.ceil(totalRegistros / itensPorPagina);
     const primeiroItem = (pagina - 1) * itensPorPagina + 1;
     const ultimoItem = Math.min(pagina * itensPorPagina, totalRegistros);
@@ -41,7 +36,7 @@ const Paginacao = ({
                     {pagina} de {totalPaginas}
                 </span>
                 <button type="button" onClick={proximo} disabled={pagina === totalPaginas}>
-                    Anterior
+                    Próximo
                 </button>
             </S.Controles>
         </S.Container>

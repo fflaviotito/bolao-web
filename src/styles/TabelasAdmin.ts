@@ -109,3 +109,16 @@ export const PilulaStatus = styled.span<{ $tipo: 'ativo' | 'finalizado' }>`
         }
     }}
 `;
+
+export const ColunaForte = styled.td`
+    && {
+        font-weight: bold;
+        color: ${({ theme }) => theme.cores.textoPrimario};
+    }
+`;
+
+export const ColunaNumero = styled.th`
+    && {
+        width: 50px;
+    }
+`;

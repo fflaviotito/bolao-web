@@ -1,25 +1,16 @@
-import { useEffect, useState, type FormEvent } from 'react';
-import Botao from '../../../components/Botao';
-import InputTexto from '../../../components/InputTexto';
-import {
-    CabecalhoCartao,
-    CartaoLogin,
-    FormularioLogin,
-    LadoMarca,
-    LoginContainer,
-    RodapeCartao
-} from './style';
-import api from '../../../services/api';
-import type { LoginResponse } from '../../../types/auth';
-import type { AxiosError } from 'axios';
-import type { RespostaErro } from '../../../types/api';
-import { useNavigate, Link } from 'react-router-dom';
 import z from 'zod';
-import { emailRegra, senhaPuraLogin } from '../../../validators';
-import { toast } from 'react-toastify';
-import { useCarregando } from '../../../contexts/CarregandoContext';
+import { emailRegra, senhaPuraLogin } from '@/validators';
+import { useNavigate, Link } from 'react-router-dom';
+import { useCarregando } from '@/contexts/CarregandoContext';
+import { useEffect, useState, type FormEvent } from 'react';
+import api from '@/services/api';
+import type { LoginResponse } from '@/types';
+import PaginaAutenticacao from '@/layouts/PaginaAutenticacao';
+import * as S from './style';
+import { Botao, InputTexto } from '@/components';
+import { tratarErro, validarFormulario } from '@/utils';
 
-const loginSchema = z.object({
+const schema = z.object({
     email: emailRegra,
     senha: senhaPuraLogin
 });
@@ -30,6 +21,7 @@ const Login = () => {
     const { mostrarCarregando, esconderCarregando } = useCarregando();
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
+    const [erros, setErros] = useState({});
 
     useEffect(() => {
         document.title = 'Bolão | Acesse sua conta';
@@ -41,8 +33,12 @@ const Login = () => {
     const aoEnviar = async (evento: FormEvent) => {
         evento.preventDefault();
 
-        const dadosValidos = loginSchema.safeParse({ email, senha });
-        if (!dadosValidos.success) return toast.warning('E-mail ou senha inválidos!');
+        const dadosValidos = validarFormulario({
+            schema,
+            dados: { email, senha },
+            setErros
+        });
+        if (!dadosValidos) return;
 
         try {
             mostrarCarregando();
@@ -56,81 +52,60 @@ const Login = () => {
 
             navegar('/');
         } catch (erro) {
-            const erroAxios = erro as AxiosError<RespostaErro>;
-
-            if (!erroAxios.response) {
-                return toast.error('Erro de conexão com o servidor. Tente mais tarde!');
-            }
-
-            const { codigo } = erroAxios.response.data;
-
-            if (codigo === 400) return toast.warning('Campos inválidos!');
-
-            if (codigo === 401) return toast.warning('E-mail ou senha incorretos!');
-
-            if (codigo === 500) return toast.error('Erro no servidor, contate o suporte!');
+            tratarErro(erro, setErros, {
+                401: 'E-mail ou senha incorretos!'
+            });
         } finally {
             esconderCarregando();
         }
     };
 
     return (
-        <LoginContainer>
-            <LadoMarca>
-                <img src="/images/logo.png" alt="Logo do Bolão" />
+        <PaginaAutenticacao
+            titulo="Olá, Bem-vindo!"
+            descricao="Seu chute certo está aqui, palpite e acerte o resultado."
+            descricao2="Jogue com os amigos!"
+            tituloCartao="Acesse sua conta"
+            subtituloCartao="Insira suas credenciais e faça seu palpite"
+            ladoCartao="direito"
+        >
+            <S.Formulario onSubmit={aoEnviar}>
                 <div>
-                    <h1>Olá, Bem-vindo!</h1>
-                    <p>
-                        Seu chute certo está aqui, palpite e acerte o resultado.
-                        <br />
-                        Jogue com os amigos!
-                    </p>
-                </div>
-            </LadoMarca>
-
-            <CartaoLogin>
-                <CabecalhoCartao>
-                    <img src="/images/logo.png" alt="Logo do Bolão" />
-                    <h2>Acesse sua conta</h2>
-                    <p>Insira suas credenciais e faça seu palpite</p>
-                </CabecalhoCartao>
-
-                <FormularioLogin onSubmit={aoEnviar}>
-                    <div>
-                        <InputTexto
-                            label="E-mail"
-                            type="email"
-                            placeholder="Digite seu email..."
-                            required={true}
-                            name="email"
-                            value={email}
-                            onChange={(evento) => setEmail(evento.target.value)}
-                        />
-                        <InputTexto
-                            label="Senha"
-                            type="password"
-                            placeholder="Digite sua senha..."
-                            required={true}
-                            name="senha"
-                            value={senha}
-                            onChange={(evento) => setSenha(evento.target.value)}
-                        />
-                        <div className="checkbox">
-                            <input type="checkbox" id="lembrar-me" />
-                            <label htmlFor="lembrar-me">Lembrar-me</label>
-                        </div>
+                    <InputTexto
+                        label="E-mail"
+                        type="email"
+                        placeholder="Digite seu email..."
+                        required={true}
+                        name="email"
+                        value={email}
+                        onChange={(evento) => setEmail(evento.target.value)}
+                        erros={erros}
+                    />
+                    <InputTexto
+                        label="Senha"
+                        type="password"
+                        placeholder="Digite sua senha..."
+                        required={true}
+                        name="senha"
+                        value={senha}
+                        onChange={(evento) => setSenha(evento.target.value)}
+                        erros={erros}
+                    />
+                    <div className="checkbox">
+                        <input type="checkbox" id="lembrar-me" />
+                        <label htmlFor="lembrar-me">Lembrar-me</label>
                     </div>
-                    <Botao tipo="submit" texto="Enviar" variante="principal" larguraTotal />
-                </FormularioLogin>
+                </div>
+                <Botao tipo="submit" texto="Enviar" variante="principal" larguraTotal />
+            </S.Formulario>
 
-                <RodapeCartao>
-                    <Link to="/recuperar-senha">Esqueceu sua senha?</Link>
-                    <Link to="/cadastrar">
-                        Não tem uma conta? <span>Cadastre-se</span>
-                    </Link>
-                </RodapeCartao>
-            </CartaoLogin>
-        </LoginContainer>
+            <S.RodapeCartao>
+                <Link to="/recuperar-senha">Esqueceu sua senha?</Link>
+                <Link to="/cadastrar">
+                    Não tem uma conta? <span>Cadastre-se</span>
+                </Link>
+            </S.RodapeCartao>
+        </PaginaAutenticacao>
     );
 };
 

@@ -3,6 +3,7 @@ export { default as Botao } from './Botao';
 export { default as CardAcao } from './CardAcao';
 export { default as Carregando } from './Carregando';
 export { default as InputTexto } from './InputTexto';
+export { default as ListaErro } from './ListaErro';
 export { default as MenuNavegacaoAdmin } from './MenuNavegacaoAdmin';
 export { default as Modal } from './Modal';
 export { default as Paginacao } from './Paginacao';

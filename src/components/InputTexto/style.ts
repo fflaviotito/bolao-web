@@ -21,7 +21,8 @@ export const Container = styled.div<ContainerProps>`
         height: 48px;
         padding: 0 16px;
         background-color: ${({ theme }) => theme.cores.fundoInput};
-        border: 1px solid ${({ theme, $temErro }) => $temErro ? theme.cores.erros : theme.cores.textoSecundario};
+        border: 1px solid
+            ${({ theme, $temErro }) => ($temErro ? theme.cores.erros : theme.cores.textoSecundario)};
         border-radius: 8px;
         font-size: 14px;
         color: ${({ theme }) => theme.cores.textoPrimario};
@@ -34,13 +35,5 @@ export const Container = styled.div<ContainerProps>`
             outline-color: ${({ theme, $temErro }) =>
                 $temErro ? theme.cores.erros : theme.cores.textoSecundario};
         }
-    }
-`;
-
-export const ListaErros = styled.ul`
-    > li {
-        list-style-position: inside;
-        font-size: 10px;
-        color: ${({ theme }) => theme.cores.erros};
     }
 `;

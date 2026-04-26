@@ -1,7 +1,6 @@
 import { Outlet } from 'react-router-dom';
-import MenuNavegacaoAdmin from '../../components/MenuNavegacaoAdmin';
 import * as S from './style';
-import Rodape from '../../components/Rodape';
+import { MenuNavegacaoAdmin, Rodape } from '@/components';
 
 const PainelAdmin = () => {
     return (

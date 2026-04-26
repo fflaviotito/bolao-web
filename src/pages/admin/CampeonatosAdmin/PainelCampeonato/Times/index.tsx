@@ -1,89 +1,72 @@
-import { useEffect, useState, type FormEvent } from 'react';
-import { useParams } from 'react-router-dom';
+import type { Time } from '@/types';
 import { useCarregando } from '@/contexts/CarregandoContext';
+import { useParams } from 'react-router-dom';
+import { useEffect, useCallback, useState, type FormEvent } from 'react';
+import type { OpcaoSelect } from '@/components/SelectComBusca';
 import api from '@/services/api';
 import { tratarErro } from '@/utils';
+import { toast } from 'react-toastify';
 import * as S from './style';
 import { Botao, SelectComBusca } from '@/components';
 import { Minus, Plus } from 'lucide-react';
-import { toast } from 'react-toastify';
 
-interface Times {
-    id: string;
-    nomePopular: string;
-}
+type TimeVinculado = Pick<Time, 'id' | 'nomePopular'>;
 
 const TimesDoCampeonato = () => {
-    const [timeId, setTimeId] = useState('');
-    const [opcoesTimes, setOpcoesTimes] = useState<{ label: string; value: string }[]>([]);
-    const [carregandoTimes, setCarregandoTimes] = useState(false);
-    const [timesVinculados, setTimesVinculados] = useState<Times[]>([]);
-    const { id: campeonatoId } = useParams();
     const { esconderCarregando, mostrarCarregando } = useCarregando();
+    const { id: campeonatoId } = useParams();
+
+    const [timeId, setTimeId] = useState('');
+    const [opcoesTimes, setOpcoesTimes] = useState<OpcaoSelect[]>([]);
+    const [carregandoTimes, setCarregandoTimes] = useState(false);
+    const [timesVinculados, setTimesVinculados] = useState<TimeVinculado[]>([]);
+
+    const buscarTimesVinculados = useCallback(async () => {
+        try {
+            mostrarCarregando();
+            const { data } = await api.get(`/campeonatos/${campeonatoId}/times`);
+            setTimesVinculados(
+                data.map(({ time }: { time: Time }) => ({
+                    id: time.id,
+                    nomePopular: time.nomePopular
+                }))
+            );
+        } catch (error) {
+            tratarErro(error);
+        } finally {
+            esconderCarregando();
+        }
+    }, [campeonatoId, mostrarCarregando, esconderCarregando]);
+
+    const buscarOpcoesTimes = useCallback(async () => {
+        try {
+            setCarregandoTimes(true);
+            const { data } = await api.get('/times', { params: { paginar: false } });
+            setOpcoesTimes(data.map((time: Time) => ({ label: time.nomePopular, value: time.id })));
+        } catch (error) {
+            tratarErro(error);
+        } finally {
+            setCarregandoTimes(false);
+        }
+    }, []);
 
     useEffect(() => {
-        const buscarCampanhas = async () => {
-            try {
-                mostrarCarregando();
-
-                const resposta = await api.get(`/campeonatos/${campeonatoId}/times`);
-
-                const timesFormatados = resposta.data.map((item: { time: Times }) => ({
-                    id: item.time.id,
-                    nomePopular: item.time.nomePopular
-                }));
-
-                setTimesVinculados(timesFormatados);
-            } catch (error) {
-                tratarErro(error);
-            } finally {
-                esconderCarregando();
-            }
-        };
-
-        const buscarTimes = async () => {
-            try {
-                setCarregandoTimes(true);
-
-                const resposta = await api.get('/times', {
-                    params: { paginar: false }
-                });
-
-                const timesFormatados = resposta.data.map((time: Times) => ({
-                    label: time.nomePopular,
-                    value: time.id
-                }));
-
-                setOpcoesTimes(timesFormatados);
-            } catch (error) {
-                tratarErro(error);
-            } finally {
-                setCarregandoTimes(false);
-            }
-        };
-
-        buscarCampanhas();
-        buscarTimes();
-    }, [campeonatoId, mostrarCarregando, esconderCarregando]);
+        buscarTimesVinculados();
+        buscarOpcoesTimes();
+    }, [buscarTimesVinculados, buscarOpcoesTimes]);
 
     const aoAdicionar = async (evento: FormEvent) => {
         evento.preventDefault();
         if (!timeId) return;
 
         try {
-            await api.post(`/admin/campeonatos/${campeonatoId}/times`, {
-                campeonatoId,
-                timeId
-            });
+            await api.post(`/admin/campeonatos/${campeonatoId}/times`, { campeonatoId, timeId });
 
             const timeSelecionado = opcoesTimes.find((t) => t.value === timeId);
             if (timeSelecionado) {
                 setTimesVinculados((prev) => [
                     ...prev,
-                    {
-                        id: timeSelecionado.value,
-                        nomePopular: timeSelecionado.label
-                    }
+                    { id: timeSelecionado.value, nomePopular: timeSelecionado.label }
                 ]);
             }
 
@@ -97,8 +80,7 @@ const TimesDoCampeonato = () => {
     const aoRemover = async (idTime: string) => {
         try {
             await api.delete(`/admin/campeonatos/${campeonatoId}/times/${idTime}`);
-
-            setTimesVinculados((prevTimes) => prevTimes.filter((time) => time.id !== idTime));
+            setTimesVinculados((prev) => prev.filter((time) => time.id !== idTime));
             toast.success('Time excluído com sucesso!');
         } catch (error) {
             tratarErro(error);
@@ -120,7 +102,7 @@ const TimesDoCampeonato = () => {
                     onChange={setTimeId}
                     opcoes={opcoesTimes}
                     loading={carregandoTimes}
-                    placeholder="Pequise o time..."
+                    placeholder="Pesquise o time..."
                 />
                 <Botao
                     tipo="submit"
@@ -130,12 +112,11 @@ const TimesDoCampeonato = () => {
                 />
             </S.Formulario>
 
-            {timesVinculados && timesVinculados.length > 0 && (
+            {timesVinculados.length > 0 && (
                 <S.ListaTimes>
                     {timesVinculados.map((time) => (
                         <S.CardTime key={time.id}>
                             <span>{time.nomePopular}</span>
-
                             <S.BotaoRemover
                                 type="button"
                                 onClick={() => aoRemover(time.id)}

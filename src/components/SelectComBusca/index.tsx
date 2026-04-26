@@ -1,9 +1,9 @@
+import type { ErrosPorCampo } from '@/utils/formatarErrosZod';
 import { useState, useRef, useEffect } from 'react';
 import * as S from './style';
-import { InputTexto } from '..';
-import type { ErrosPorCampo } from '@/utils/formatarErrosZod';
+import { InputTexto, ListaErro } from '@/components';
 
-interface Opcao {
+export interface OpcaoSelect {
     label: string;
     value: string;
 }
@@ -13,7 +13,7 @@ interface SelectComBuscaProps {
     name: string;
     value: string;
     onChange: (valor: string) => void;
-    opcoes: Opcao[];
+    opcoes: OpcaoSelect[];
     erros?: ErrosPorCampo;
     placeholder?: string;
     loading?: boolean;
@@ -100,13 +100,7 @@ const SelectComBusca = ({
                     )}
                 </S.ListaFlutuante>
             )}
-            {errosDesteCampo && (
-                <S.ListaErros>
-                    {errosDesteCampo.map((msg, index) => (
-                        <li key={index}>{msg}</li>
-                    ))}
-                </S.ListaErros>
-            )}
+            {errosDesteCampo && <ListaErro erros={errosDesteCampo} />}
         </S.Container>
     );
 };

@@ -3,7 +3,6 @@ import * as S from './style';
 import { Search, X } from 'lucide-react';
 
 export interface BarraPesquisaProps {
-    aoConfirmar?: () => void;
     aoDigitar: (evento: ChangeEvent<HTMLInputElement>) => void;
     aoLimpar: () => void;
     aoPressionarEnter: (evento: KeyboardEvent<HTMLInputElement>) => void;

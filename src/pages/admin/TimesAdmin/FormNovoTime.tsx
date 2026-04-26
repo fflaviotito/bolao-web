@@ -1,16 +1,26 @@
+import z from 'zod';
+import { escudoRegra, nomePadraoRegra, siglaTimeRegra } from '@/validators';
 import type { ModalFormularioProps } from '@/types/modal';
 import { useCarregando } from '@/contexts/CarregandoContext';
 import { useEffect, useState, type FormEvent } from 'react';
+import type { OpcaoSelect } from '@/components/SelectComBusca';
 import api from '@/services/api';
-import { tratarErro } from '@/utils';
-import { toast } from 'react-toastify';
+import { aoCadastrarFormulario, tratarErro } from '@/utils';
 import { Botao, InputTexto, Modal, SelectComBusca } from '@/components';
 import * as S from '@/styles/FormsNovosCadastros';
 
-interface Estadios {
+interface EstadiosParaSelect {
     id: string;
     nomePopular: string;
 }
+
+const schema = z.object({
+    nomeOficial: nomePadraoRegra.or(z.literal('')),
+    nomePopular: nomePadraoRegra,
+    sigla: siglaTimeRegra,
+    escudo: escudoRegra,
+    estadioId: z.string()
+});
 
 const FormNovoTime = ({ aberto, aoFechar, aoSucesso }: ModalFormularioProps) => {
     const { mostrarCarregando, esconderCarregando } = useCarregando();
@@ -20,7 +30,7 @@ const FormNovoTime = ({ aberto, aoFechar, aoSucesso }: ModalFormularioProps) => 
     const [escudo, setEscudo] = useState('');
     const [estadioId, setEstadioId] = useState('');
     const [erros, setErros] = useState({});
-    const [opcoesEstadios, setOpcoesEstadios] = useState<{ label: string; value: string }[]>([]);
+    const [opcoesEstadios, setOpcoesEstadios] = useState<OpcaoSelect[]>([]);
     const [carregandoEstadios, setCarregandoEstadios] = useState(false);
 
     useEffect(() => {
@@ -37,7 +47,7 @@ const FormNovoTime = ({ aberto, aoFechar, aoSucesso }: ModalFormularioProps) => 
                 params: { paginar: false }
             });
 
-            const estadiosFormatados = resposta.data.map((estadio: Estadios) => ({
+            const estadiosFormatados = resposta.data.map((estadio: EstadiosParaSelect) => ({
                 label: estadio.nomePopular,
                 value: estadio.id
             }));
@@ -51,27 +61,26 @@ const FormNovoTime = ({ aberto, aoFechar, aoSucesso }: ModalFormularioProps) => 
     };
 
     const aoEnviar = async (evento: FormEvent) => {
-        evento.preventDefault();
-
-        try {
-            mostrarCarregando();
-
-            await api.post('/admin/times', {
-                nomeOficial,
-                nomePopular,
-                sigla,
-                escudo,
-                estadioId
-            });
-
-            toast.success('Time criado com sucesso');
-            aoCancelar();
-            aoSucesso();
-        } catch (error) {
-            tratarErro(error, setErros);
-        } finally {
-            esconderCarregando();
-        }
+        aoCadastrarFormulario({
+            evento,
+            validarDados: {
+                schema,
+                dados: {
+                    nomeOficial,
+                    nomePopular,
+                    sigla,
+                    escudo,
+                    estadioId
+                },
+                setErros
+            },
+            mostrarCarregando,
+            esconderCarregando,
+            rotaPost: '/admin/times',
+            mensagemSucesso: 'Time cadastrado com sucesso!',
+            aoCancelar,
+            aoSucesso
+        });
     };
 
     const aoCancelar = () => {

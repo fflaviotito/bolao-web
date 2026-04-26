@@ -1,18 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useBuscaPaginada } from '@/hooks/useBuscaPaginada';
+import type { Campeonato } from '@/types';
 import * as S from '@/styles/TabelasAdmin';
 import PaginasAdmin from '@/layouts/PaginasAdmin';
+import { obterStatusPorData } from '@/utils';
 import FormNovoCampeonato from './FormNovoCampeonato';
-
-interface Campeonatos {
-    ano: number;
-    divisao: string;
-    id: number;
-    nome: string;
-    dataInicio: Date;
-    dataFim: Date;
-}
 
 const CampeonatosAdmin = () => {
     const navigate = useNavigate();
@@ -22,15 +15,7 @@ const CampeonatosAdmin = () => {
         dados: campeonatos,
         paginacao,
         recarregar
-    } = useBuscaPaginada<Campeonatos>('/campeonatos');
-
-    const calcularStatus = (inicio: Date, fim: Date) => {
-        const hoje = new Date();
-
-        if (hoje < new Date(inicio)) return 'Em breve';
-        if (hoje > new Date(fim)) return 'Finalizado';
-        return 'Ativo';
-    };
+    } = useBuscaPaginada<Campeonato>('/campeonatos');
 
     return (
         <S.Container>
@@ -44,7 +29,7 @@ const CampeonatosAdmin = () => {
                     <S.Tabela>
                         <thead>
                             <tr>
-                                <th style={{ width: '50px' }}>Nº</th>
+                                <S.ColunaNumero>Nº</S.ColunaNumero>
                                 <th>Nome</th>
                                 <th>Divisão</th>
                                 <th>Ano</th>
@@ -52,36 +37,33 @@ const CampeonatosAdmin = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {campeonatos.map((campeonato, index) => (
-                                <tr
-                                    key={campeonato.id}
-                                    onClick={() => navigate(`/admin/campeonatos/${campeonato.id}`)}
-                                >
-                                    <td>{(paginacao.pagina - 1) * 10 + index + 1}</td>
-                                    <td style={{ fontWeight: 'bold', color: '#0f172a' }}>
-                                        {campeonato.nome}
-                                    </td>
-                                    <td>{campeonato.divisao}</td>
-                                    <td>{campeonato.ano}</td>
-                                    <td>
-                                        <S.PilulaStatus
-                                            $tipo={
-                                                calcularStatus(
-                                                    campeonato.dataInicio,
-                                                    campeonato.dataFim
-                                                ) === 'Ativo'
-                                                    ? 'ativo'
-                                                    : 'finalizado'
-                                            }
-                                        >
-                                            {calcularStatus(
-                                                campeonato.dataInicio,
-                                                campeonato.dataFim
-                                            )}
-                                        </S.PilulaStatus>
-                                    </td>
-                                </tr>
-                            ))}
+                            {campeonatos.map((campeonato, index) => {
+                                const status = obterStatusPorData(
+                                    campeonato.dataInicio,
+                                    campeonato.dataFim
+                                );
+
+                                return (
+                                    <tr
+                                        key={campeonato.id}
+                                        onClick={() =>
+                                            navigate(`/admin/campeonatos/${campeonato.id}`)
+                                        }
+                                    >
+                                        <td>{(paginacao.pagina - 1) * 10 + index + 1}</td>
+                                        <S.ColunaForte>{campeonato.nome}</S.ColunaForte>
+                                        <td>{campeonato.divisao}</td>
+                                        <td>{campeonato.ano}</td>
+                                        <td>
+                                            <S.PilulaStatus
+                                                $tipo={status === 'Ativo' ? 'ativo' : 'finalizado'}
+                                            >
+                                                {status}
+                                            </S.PilulaStatus>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     </S.Tabela>
                 </S.TabelaContainer>

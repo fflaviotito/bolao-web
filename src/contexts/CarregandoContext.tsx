@@ -20,14 +20,17 @@ export const CarregandoProvider = ({ children }: { children: ReactNode }) => {
         setCarregando(false);
     }, []);
 
-    const valor = useMemo(() => ({
-        carregando,
-        mostrarCarregando,
-        esconderCarregando
-    }), [carregando, mostrarCarregando, esconderCarregando]);
+    const valor = useMemo(
+        () => ({
+            carregando,
+            mostrarCarregando,
+            esconderCarregando
+        }),
+        [carregando, mostrarCarregando, esconderCarregando]
+    );
 
     return (
-        <CarregandoContext.Provider value={ valor }>
+        <CarregandoContext.Provider value={valor}>
             {children}
             {carregando && <Carregando />}
         </CarregandoContext.Provider>

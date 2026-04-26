@@ -2,13 +2,15 @@ import type z from 'zod';
 import { formatarErrosZod } from './formatarErrosZod';
 import { toast } from 'react-toastify';
 
-interface validarFormularioProps {
+export interface validarFormularioProps {
     dados: unknown;
     schema: z.ZodType;
     setErros: (erros: Record<string, string[]>) => void;
 }
 
 export const validarFormulario = ({ dados, schema, setErros }: validarFormularioProps) => {
+    setErros({});
+
     const dadosValidos = schema.safeParse(dados);
 
     if (!dadosValidos.success) {
@@ -18,6 +20,5 @@ export const validarFormulario = ({ dados, schema, setErros }: validarFormulario
         return false;
     }
 
-    setErros({});
     return dadosValidos;
 };

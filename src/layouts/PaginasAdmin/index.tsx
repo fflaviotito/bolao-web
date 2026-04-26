@@ -2,8 +2,8 @@ import type { BarraPesquisaProps } from '@/components/BarraPesquisa';
 import type { PaginacaoProps } from '@/components/Paginacao';
 import { useEffect, type ReactNode } from 'react';
 import * as S from './style';
-import { Plus } from 'lucide-react';
 import { BarraPesquisa, Botao, Paginacao } from '@/components';
+import { Plus } from 'lucide-react';
 
 interface PaginasAdminProps {
     aoClicarAdicionar: () => void;
@@ -36,18 +36,9 @@ const PaginasAdmin = ({
                     aoClicar={aoClicarAdicionar}
                 />
             </S.Cabecalho>
-            <BarraPesquisa
-                aoDigitar={barraPesquisa.aoDigitar}
-                aoLimpar={barraPesquisa.aoLimpar}
-                aoPressionarEnter={barraPesquisa.aoPressionarEnter}
-                valor={barraPesquisa.valor}
-            />
+            <BarraPesquisa {...barraPesquisa} />
             {children}
-            <Paginacao
-                pagina={paginacao.pagina}
-                setPagina={paginacao.setPagina}
-                totalRegistros={paginacao.totalRegistros}
-            />
+            <Paginacao {...paginacao} />
         </>
     );
 };

@@ -1,14 +1,12 @@
 import z from 'zod';
 import { anoRegra, dataBrasileiraRegra, divisaoRegra, nomePadraoRegra } from '@/validators';
-import { transformarStringParaData, tratarErro, validarFormulario } from '@/utils';
+import { aoCadastrarFormulario, transformarStringParaData } from '@/utils';
 import type { ModalFormularioProps } from '@/types/modal';
 import { useCarregando } from '@/contexts/CarregandoContext';
 import { useState, type FormEvent } from 'react';
-import api from '@/services/api';
-import { toast } from 'react-toastify';
 import { Botao, InputTexto, Modal } from '@/components';
 import * as S from '@/styles/FormsNovosCadastros';
-import { mascaraAno, mascaraData, mascaraTextoPadrao } from '@/utils/mascaras';
+import { mascaraAno, mascaraData, mascaraTextoPadrao } from '@/utils';
 
 const schema = z
     .object({
@@ -44,35 +42,20 @@ const FormNovoCampeonato = ({ aberto, aoFechar, aoSucesso }: ModalFormularioProp
     const [erros, setErros] = useState({});
 
     const aoEnviar = async (evento: FormEvent) => {
-        evento.preventDefault();
-
-        const dadosValidos = validarFormulario({
-            schema,
-            dados: { nome, divisao, ano, dataInicio, dataFim },
-            setErros
+        aoCadastrarFormulario({
+            evento,
+            validarDados: {
+                schema,
+                dados: { nome, divisao, ano, dataInicio, dataFim },
+                setErros
+            },
+            mostrarCarregando,
+            esconderCarregando,
+            rotaPost: '/admin/campeonatos',
+            mensagemSucesso: 'Campeonato cadastrado com sucesso!',
+            aoCancelar,
+            aoSucesso
         });
-
-        if (!dadosValidos) return;
-
-        try {
-            mostrarCarregando();
-
-            await api.post('/admin/campeonatos', {
-                nome,
-                divisao,
-                ano,
-                dataInicio,
-                dataFim
-            });
-
-            toast.success('Campeonato criado com sucesso!');
-            aoCancelar();
-            aoSucesso();
-        } catch (error) {
-            tratarErro(error, setErros);
-        } finally {
-            esconderCarregando();
-        }
     };
 
     const aoCancelar = () => {

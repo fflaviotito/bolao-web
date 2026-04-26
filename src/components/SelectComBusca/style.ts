@@ -8,14 +8,6 @@ export const Container = styled.div`
     gap: 4px;
 `;
 
-export const ListaErros = styled.ul`
-    > li {
-        list-style-position: inside;
-        font-size: 10px;
-        color: ${({ theme }) => theme.cores.erros};
-    }
-`;
-
 export const ListaFlutuante = styled.ul`
     position: absolute;
     top: 100%;

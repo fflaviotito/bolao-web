@@ -1,21 +1,14 @@
 import { useState } from 'react';
 import { useBuscaPaginada } from '@/hooks/useBuscaPaginada';
+import type { Time } from '@/types';
 import * as S from '@/styles/TabelasAdmin';
 import PaginasAdmin from '@/layouts/PaginasAdmin';
+import { CampoCompartilhado } from './style';
 import FormNovoTime from './FormNovoTime';
-
-interface Times {
-    escudo: string;
-    estadio: { nomePopular: string };
-    id: string;
-    nomeOficial: string;
-    nomePopular: string;
-    sigla: string;
-}
 
 const TimesAdmin = () => {
     const [modalAberto, setModalAberto] = useState(false);
-    const { busca, dados: times, paginacao, recarregar } = useBuscaPaginada<Times>('/times');
+    const { busca, dados: times, paginacao, recarregar } = useBuscaPaginada<Time>('/times');
 
     return (
         <S.Container>
@@ -29,7 +22,7 @@ const TimesAdmin = () => {
                     <S.Tabela>
                         <thead>
                             <tr>
-                                <th style={{ width: '50px' }}>Nº</th>
+                                <S.ColunaNumero>Nº</S.ColunaNumero>
                                 <th>Nome Popular</th>
                                 <th>Sigla</th>
                                 <th>Nome Oficial</th>
@@ -40,27 +33,12 @@ const TimesAdmin = () => {
                             {times.map((time, index) => (
                                 <tr key={time.id}>
                                     <td>{(paginacao.pagina - 1) * 10 + index + 1}</td>
-                                    <td>
-                                        <div
-                                            style={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '12px'
-                                            }}
-                                        >
-                                            <img
-                                                style={{
-                                                    width: '30px',
-                                                    objectFit: 'contain'
-                                                }}
-                                                src={time.escudo}
-                                                alt={time.nomePopular}
-                                            />
-                                            <span style={{ fontWeight: 'bold', color: '#0f172a' }}>
-                                                {time.nomePopular}
-                                            </span>
-                                        </div>
-                                    </td>
+                                    <S.ColunaForte>
+                                        <CampoCompartilhado>
+                                            <img src={time.escudo} alt={time.nomePopular} />
+                                            <span>{time.nomePopular}</span>
+                                        </CampoCompartilhado>
+                                    </S.ColunaForte>
                                     <td>{time.sigla}</td>
                                     <td>{time.nomeOficial}</td>
                                     <td>{time.estadio.nomePopular}</td>
