@@ -3,7 +3,6 @@ import { useBuscaPaginada } from '@/hooks/useBuscaPaginada';
 import type { Time } from '@/types';
 import * as S from '@/styles/TabelasAdmin';
 import PaginasAdmin from '@/layouts/PaginasAdmin';
-import { CampoCompartilhado } from './style';
 import FormNovoTime from './FormNovoTime';
 
 const TimesAdmin = () => {
@@ -34,10 +33,10 @@ const TimesAdmin = () => {
                                 <tr key={time.id}>
                                     <td>{(paginacao.pagina - 1) * 10 + index + 1}</td>
                                     <S.ColunaForte>
-                                        <CampoCompartilhado>
+                                        <S.CampoCompartilhado>
                                             <img src={time.escudo} alt={time.nomePopular} />
                                             <span>{time.nomePopular}</span>
-                                        </CampoCompartilhado>
+                                        </S.CampoCompartilhado>
                                     </S.ColunaForte>
                                     <td>{time.sigla}</td>
                                     <td>{time.nomeOficial}</td>

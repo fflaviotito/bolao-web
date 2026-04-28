@@ -65,7 +65,7 @@ export const CardTime = styled.li`
     border: 1px solid ${({ theme }) => theme.cores.bordaInput};
     padding: 16px;
     border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s;
 
     &:hover {
@@ -87,7 +87,7 @@ export const BotaoRemover = styled.button`
     height: 36px;
     border-radius: 6px;
     transition: all 0.2s;
-    background-color: #fee2e2; 
+    background-color: #fee2e2;
     color: ${({ theme }) => theme.cores.erros};
 
     &:hover {

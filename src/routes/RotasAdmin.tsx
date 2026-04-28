@@ -5,6 +5,7 @@ import EstadiosAdmin from '@/pages/admin/EstadiosAdmin';
 import TimesAdmin from '@/pages/admin/TimesAdmin';
 import PainelCampeonatoAdmin from '@/pages/admin/CampeonatosAdmin/PainelCampeonato';
 import TimesDoCampeonato from '@/pages/admin/CampeonatosAdmin/PainelCampeonato/Times';
+import ClassificacaoDoCampeonato from '@/pages/admin/CampeonatosAdmin/PainelCampeonato/Classificacao';
 
 const RotasAdmin = () => {
     return (
@@ -17,10 +18,7 @@ const RotasAdmin = () => {
                         <Route index element={<PainelCampeonatoAdmin />} />
                         <Route path="times" element={<TimesDoCampeonato />} />
                         <Route path="jogos" element={<h1>Cria rodadas e jogos</h1>} />
-                        <Route
-                            path="classificacao"
-                            element={<h1>Confere a classificação oficial do campeonato</h1>}
-                        />
+                        <Route path="classificacao" element={<ClassificacaoDoCampeonato />} />
                     </Route>
                 </Route>
                 <Route path="/estadios" element={<EstadiosAdmin />} />

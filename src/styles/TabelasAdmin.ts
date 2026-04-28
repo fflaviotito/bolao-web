@@ -82,6 +82,36 @@ export const Tabela = styled.table`
             }
         }
     }
+
+    > tfoot {
+        background-color: ${({ theme }) => theme.cores.fundoSite};
+        border-top: 1px solid #e2e8f0;
+
+        > tr > td {
+            padding: 12px 24px;
+
+            > div {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px 16px;
+
+                > span {
+                    font-size: 11px;
+                    font-weight: 600;
+                    color: ${({ theme }) => theme.cores.textoTerciario};
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    white-space: nowrap;
+
+                    &::before {
+                        content: '•';
+                        margin-right: 4px;
+                        color: ${({ theme }) => theme.cores.secundario};
+                    }
+                }
+            }
+        }
+    }
 `;
 
 export const PilulaStatus = styled.span<{ $tipo: 'ativo' | 'finalizado' }>`
@@ -120,5 +150,16 @@ export const ColunaForte = styled.td`
 export const ColunaNumero = styled.th`
     && {
         width: 50px;
+    }
+`;
+
+export const CampoCompartilhado = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    > img {
+        width: 30px;
+        object-fit: contain;
     }
 `;
