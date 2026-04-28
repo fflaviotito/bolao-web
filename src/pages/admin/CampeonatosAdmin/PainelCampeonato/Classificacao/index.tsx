@@ -62,8 +62,8 @@ const ClassificacaoDoCampeonato = () => {
                                         <span>{time.time.nomePopular}</span>
                                     </S.CampoCompartilhado>
                                 </S.ColunaForte>
-                                <td>{time.partida}</td>
                                 <td>{time.ponto}</td>
+                                <td>{time.partida}</td>
                                 <td>{time.vitoria}</td>
                                 <td>{time.derrota}</td>
                                 <td>{time.empate}</td>
