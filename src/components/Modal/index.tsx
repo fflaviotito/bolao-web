@@ -4,13 +4,24 @@ import { X } from 'lucide-react';
 
 interface ModalProps {
     aberto: boolean;
-    aoFechar: () => void;
     children: ReactNode;
     titulo: string;
+    aoFechar?: () => void;
+    variante?: 'formulario' | 'pop-up';
+    icone?: ReactNode;
 }
 
-const Modal = ({ aberto, aoFechar, children, titulo }: ModalProps) => {
+const Modal = ({
+    aberto,
+    aoFechar,
+    children,
+    titulo,
+    variante = 'formulario',
+    icone
+}: ModalProps) => {
     useEffect(() => {
+        if (!aoFechar) return;
+
         const aoApertarEsc = (e: KeyboardEvent) => {
             if (e.key === 'Escape') aoFechar();
         };
@@ -23,11 +34,20 @@ const Modal = ({ aberto, aoFechar, children, titulo }: ModalProps) => {
     return (
         <S.Overlay>
             <S.Container>
-                <S.Cabecalho>
-                    <h2>{titulo}</h2>
-                    <button type="button" onClick={aoFechar}>
-                        {<X size={24} strokeWidth={3} />}
-                    </button>
+                <S.Cabecalho $variante={variante}>
+                    {variante === 'formulario' ? (
+                        <>
+                            <h2>{titulo}</h2>
+                            <button type="button" onClick={aoFechar}>
+                                {<X size={24} strokeWidth={3} />}
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            {icone}
+                            <h2>{titulo}</h2>
+                        </>
+                    )}
                 </S.Cabecalho>
                 <S.Conteudo>{children}</S.Conteudo>
             </S.Container>

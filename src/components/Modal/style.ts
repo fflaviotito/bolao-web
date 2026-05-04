@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Overlay = styled.div`
     position: fixed;
@@ -9,14 +9,14 @@ export const Overlay = styled.div`
     padding: 20px;
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(2px);
-    z-index: 9999;    
+    z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
-`
+`;
 
 export const Container = styled.div`
-    background-color: #FFF;
+    background-color: #fff;
     width: 100%;
     max-width: 600px;
     max-height: 90vh;
@@ -29,17 +29,10 @@ export const Container = styled.div`
     display: flex;
     flex-direction: column;
     gap: 24px;
-`
+`;
 
-export const Cabecalho = styled.div`
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    grid-gap: 12px;
-    align-items: start;
-
+export const Cabecalho = styled.div<{ $variante: 'formulario' | 'pop-up' }>`
     > h2 {
-        grid-column: 2;
-        text-align: center;
         font-size: 20px;
         font-weight: bold;
         color: ${({ theme }) => theme.cores.textoPrimario};
@@ -50,27 +43,54 @@ export const Cabecalho = styled.div`
         }
     }
 
-    > button {
-        grid-column: 3;
-        justify-self: end;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: transparent;
-        border: none;
-        color: ${({ theme }) => theme.cores.textoTerciario};
-        transition: color 0.2s;
+    ${({ $variante }) =>
+        $variante === 'formulario' &&
+        css`
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            grid-gap: 12px;
+            align-items: start;
 
-        &:hover {
-            color: ${({ theme }) => theme.cores.textoPrimario};
-        }
-    }
-`
+            > h2 {
+                grid-column: 2;
+                text-align: center;
+            }
+
+            > button {
+                grid-column: 3;
+                justify-self: end;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: transparent;
+                border: none;
+                color: ${({ theme }) => theme.cores.textoTerciario};
+                transition: color 0.2s;
+
+                &:hover {
+                    color: ${({ theme }) => theme.cores.textoPrimario};
+                }
+            }
+        `}
+
+    ${({ $variante }) =>
+        $variante === 'pop-up' &&
+        css`
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+
+            > svg {
+                color: #f1c40f;
+            }
+        `}
+`;
 
 export const Conteudo = styled.div`
     overflow-y: auto;
     padding: 0 12px;
-    
+
     &::-webkit-scrollbar {
         width: 8px;
     }

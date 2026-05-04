@@ -1,7 +1,7 @@
 import type { JSX } from 'react';
 import { BotaoEstilizado } from './style';
 
-interface BotaoProps {
+export interface BotaoProps {
     aoClicar?: () => void;
     icone?: JSX.Element;
     larguraTotal?: boolean;
