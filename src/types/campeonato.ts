@@ -6,4 +6,5 @@ export interface Campeonato extends AuditoriaBase {
     ano: number;
     dataInicio: Date;
     dataFim: Date;
+    status: 'rascunho' | 'configurado' | 'em_andamento' | 'finalizado';
 }

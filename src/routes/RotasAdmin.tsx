@@ -6,6 +6,7 @@ import TimesAdmin from '@/pages/admin/TimesAdmin';
 import PainelCampeonatoAdmin from '@/pages/admin/CampeonatosAdmin/PainelCampeonato';
 import TimesDoCampeonato from '@/pages/admin/CampeonatosAdmin/PainelCampeonato/Times';
 import ClassificacaoDoCampeonato from '@/pages/admin/CampeonatosAdmin/PainelCampeonato/Classificacao';
+import GuardaCampeonato from './guards/GuardaCampeonato';
 
 const RotasAdmin = () => {
     return (
@@ -15,10 +16,13 @@ const RotasAdmin = () => {
                 <Route path="/campeonatos">
                     <Route index element={<CampeonatosAdmin />} />
                     <Route path=":id">
-                        <Route index element={<PainelCampeonatoAdmin />} />
-                        <Route path="times" element={<TimesDoCampeonato />} />
-                        <Route path="jogos" element={<h1>Cria rodadas e jogos</h1>} />
-                        <Route path="classificacao" element={<ClassificacaoDoCampeonato />} />
+                        <Route element={<GuardaCampeonato />}>
+                            <Route index element={<PainelCampeonatoAdmin />} />
+                            <Route path="times" element={<TimesDoCampeonato />} />
+                            <Route path="jogos" element={<h1>Cria rodadas e jogos</h1>} />
+                            <Route path="classificacao" element={<ClassificacaoDoCampeonato />} />
+                        </Route>
+                        <Route path="configuracoes" element={<h1>Configurações</h1>} />
                     </Route>
                 </Route>
                 <Route path="/estadios" element={<EstadiosAdmin />} />

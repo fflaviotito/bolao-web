@@ -1,10 +1,8 @@
 import { Calendar, Medal, Settings, Shield } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useCarregando } from '@/contexts/CarregandoContext';
-import { useEffect, useState } from 'react';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+
 import type { Campeonato } from '@/types';
-import api from '@/services/api';
-import { tratarErro } from '@/utils';
+
 import * as S from './style';
 import { CardAcao } from '@/components';
 
@@ -32,30 +30,8 @@ const cards = [
 
 const PainelCampeonatoAdmin = () => {
     const navegacao = useNavigate();
-    const { mostrarCarregando, esconderCarregando } = useCarregando();
-    const [campeonato, setCampeonato] = useState<Campeonato>();
     const { id } = useParams();
-
-    useEffect(() => {
-        if (!id) return;
-
-        const buscarCampeonato = async () => {
-            try {
-                mostrarCarregando();
-
-                const resposta = await api.get(`/campeonato/${id}`);
-                setCampeonato(resposta.data);
-            } catch (error) {
-                tratarErro(error);
-            } finally {
-                esconderCarregando();
-            }
-        };
-
-        buscarCampeonato();
-    }, [id, mostrarCarregando, esconderCarregando]);
-
-    if (!campeonato) return null;
+    const { campeonato } = useOutletContext<{ campeonato: Campeonato }>();
 
     const urlPadrao = `/admin/campeonatos/${id}/`;
 
