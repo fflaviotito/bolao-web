@@ -11,7 +11,7 @@ interface aoCadastrarFormularioProps {
     esconderCarregando: () => void;
     rotaPost: string;
     mensagemSucesso: string;
-    aoCancelar: () => void;
+    aoCancelar?: () => void;
     aoSucesso: () => void;
     tratamentoErros?: Mensagens;
 }
@@ -39,7 +39,7 @@ export const aoCadastrarFormulario = async ({
         await api.post(rotaPost, dadosValidos.data);
 
         toast.success(mensagemSucesso);
-        aoCancelar();
+        if (aoCancelar) aoCancelar();
         aoSucesso();
     } catch (error) {
         tratarErro(error, validarDados.setErros, tratamentoErros);

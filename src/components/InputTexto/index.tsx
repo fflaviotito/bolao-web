@@ -12,6 +12,7 @@ interface InputTextoProps extends InputHTMLAttributes<HTMLInputElement> {
     value: string;
     onChange: (evento: ChangeEvent<HTMLInputElement>) => void;
     erros?: ErrosPorCampo;
+    className?: string;
 }
 
 const InputTexto = ({
@@ -23,13 +24,14 @@ const InputTexto = ({
     value,
     onChange,
     erros,
+    className,
     ...rest
 }: InputTextoProps) => {
     const errosDesteCampo = erros ? erros[name] : undefined;
     const temErro = Boolean(errosDesteCampo);
 
     return (
-        <Container $temErro={temErro}>
+        <Container className={className} $temErro={temErro}>
             <label htmlFor={label}>{label}:</label>
             <input
                 type={type}

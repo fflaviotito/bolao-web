@@ -7,6 +7,7 @@ import PainelCampeonatoAdmin from '@/pages/admin/CampeonatosAdmin/PainelCampeona
 import TimesDoCampeonato from '@/pages/admin/CampeonatosAdmin/PainelCampeonato/Times';
 import ClassificacaoDoCampeonato from '@/pages/admin/CampeonatosAdmin/PainelCampeonato/Classificacao';
 import GuardaCampeonato from './guards/GuardaCampeonato';
+import ConfiguracoesDoCampeonato from '@/pages/admin/CampeonatosAdmin/PainelCampeonato/Configuracoes';
 
 const RotasAdmin = () => {
     return (
@@ -22,7 +23,7 @@ const RotasAdmin = () => {
                             <Route path="jogos" element={<h1>Cria rodadas e jogos</h1>} />
                             <Route path="classificacao" element={<ClassificacaoDoCampeonato />} />
                         </Route>
-                        <Route path="configuracoes" element={<h1>Configurações</h1>} />
+                        <Route path="configuracoes" element={<ConfiguracoesDoCampeonato />} />
                     </Route>
                 </Route>
                 <Route path="/estadios" element={<EstadiosAdmin />} />
