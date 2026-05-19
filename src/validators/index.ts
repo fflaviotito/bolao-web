@@ -30,7 +30,10 @@ export const nomePadraoRegra = z
     .string()
     .trim()
     .min(3, 'O campo deve conter no mínimo 3 caracteres')
-    .regex(/^[a-zA-Z0-9\sÀ-ÿ]*$/, 'Apenas letras, números e acentos são permitidos.');
+    .regex(
+        /^[a-zA-Z0-9\sÀ-ÿ-]*$/,
+        'Apenas letras, números, espaços, acentos e traços são permitidos.'
+    );
 
 export const divisaoRegra = z
     .string()
