@@ -1,4 +1,5 @@
 export { aoCadastrarFormulario } from './aoEnviarFormulario';
+export { formatarDataHora } from './formatarDataHora';
 export { formatarErrosZod } from './formatarErrosZod';
 export * from './mascaras';
 export { obterStatusPorData } from './obterStatusPorData';

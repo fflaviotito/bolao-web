@@ -6,6 +6,6 @@ export interface Time extends AuditoriaBase {
     nomePopular: string;
     sigla: string;
     escudo: string;
-    estadioId: Estadio['id'];
-    estadio: Pick<Estadio, 'nomePopular'>;
+    estadioId?: Estadio['id'];
+    estadio?: Pick<Estadio, 'nomePopular'>;
 }

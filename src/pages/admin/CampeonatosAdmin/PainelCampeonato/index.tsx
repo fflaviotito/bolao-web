@@ -13,7 +13,12 @@ const cards = [
         titulo: 'Participantes',
         url: 'times'
     },
-    { descricao: 'Criar e atualizar jogos', icone: <Calendar />, titulo: 'Rodadas', url: 'jogos' },
+    {
+        descricao: 'Criar e atualizar jogos',
+        icone: <Calendar />,
+        titulo: 'Rodadas',
+        url: 'rodadas'
+    },
     {
         descricao: 'Gerir tabela do campeonato',
         icone: <Medal />,

@@ -40,7 +40,7 @@ const TimesAdmin = () => {
                                     </S.ColunaForte>
                                     <td>{time.sigla}</td>
                                     <td>{time.nomeOficial}</td>
-                                    <td>{time.estadio.nomePopular}</td>
+                                    <td>{time.estadio?.nomePopular ?? '-'}</td>
                                 </tr>
                             ))}
                         </tbody>

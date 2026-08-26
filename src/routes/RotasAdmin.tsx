@@ -8,6 +8,8 @@ import TimesDoCampeonato from '@/pages/admin/CampeonatosAdmin/PainelCampeonato/T
 import ClassificacaoDoCampeonato from '@/pages/admin/CampeonatosAdmin/PainelCampeonato/Classificacao';
 import GuardaCampeonato from './guards/GuardaCampeonato';
 import ConfiguracoesDoCampeonato from '@/pages/admin/CampeonatosAdmin/PainelCampeonato/Configuracoes';
+import RodadasDoCampeonato from '@/pages/admin/CampeonatosAdmin/PainelCampeonato/Rodadas';
+import PartidasDaRodada from '@/pages/admin/CampeonatosAdmin/PainelCampeonato/Rodadas/Jogos';
 
 const RotasAdmin = () => {
     return (
@@ -20,7 +22,10 @@ const RotasAdmin = () => {
                         <Route element={<GuardaCampeonato />}>
                             <Route index element={<PainelCampeonatoAdmin />} />
                             <Route path="times" element={<TimesDoCampeonato />} />
-                            <Route path="jogos" element={<h1>Cria rodadas e jogos</h1>} />
+                            <Route path="rodadas">
+                                <Route index element={<RodadasDoCampeonato />} />
+                                <Route path=":rodadaId" element={<PartidasDaRodada />} />
+                            </Route>
                             <Route path="classificacao" element={<ClassificacaoDoCampeonato />} />
                         </Route>
                         <Route path="configuracoes" element={<ConfiguracoesDoCampeonato />} />

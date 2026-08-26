@@ -59,6 +59,25 @@ export const dataBrasileiraRegra = z
         return data.getDate() === dia && data.getMonth() === mes - 1 && data.getFullYear() === ano;
     }, 'Data inexistente');
 
+export const dataHoraBrasileiraRegra = z
+    .string()
+    .regex(/^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}$/, 'Formato inválido (use DD/MM/AAAA HH:mm)')
+    .refine((dataHoraString) => {
+        const [dataString, horaString] = dataHoraString.split(' ');
+        if (!dataString || !horaString) return false;
+
+        const [dia, mes, ano] = dataString.split('/').map(Number);
+        const [hora, minuto] = horaString.split(':').map(Number);
+        const data = new Date(ano, mes - 1, dia, hora, minuto);
+        return (
+            data.getDate() === dia &&
+            data.getMonth() === mes - 1 &&
+            data.getFullYear() === ano &&
+            data.getHours() === hora &&
+            data.getMinutes() === minuto
+        );
+    }, 'Data ou horário inexistente');
+
 export const escudoRegra = z
     .string('A URL do escudo é obrigatória')
     .regex(/^https?:\/\//i, 'O link deve começar com http:// ou https://')

@@ -6,7 +6,7 @@ export const formatarErrosZod = (erro: ZodError): ErrosPorCampo => {
     const errosFormatados: ErrosPorCampo = {};
 
     erro.issues.forEach((issues) => {
-        const campo = issues.path[0] as string;
+        const campo = issues.path.join('.');
 
         if (!errosFormatados[campo]) errosFormatados[campo] = [];
 

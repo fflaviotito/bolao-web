@@ -4,5 +4,7 @@ export type { AuditoriaBase } from './base';
 export type { Campeonato } from './campeonato';
 export type { Estadio } from './estadio';
 export type { ModalFormularioProps } from './modal';
+export type { Partida } from './partida';
+export type { Rodada } from './rodada';
 export type { Time } from './time';
 export type { TimePorCampeonato } from './timePorCampeonato';
